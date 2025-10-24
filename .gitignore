@@ -1,0 +1,50 @@
+# CUDA compiled files
+*.o
+*.obj
+*.exe
+*.out
+*.app
+*.i
+*.ii
+*.gpu
+*.ptx
+*.cubin
+*.fatbin
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Build directories
+build/
+debug/
+release/
+x64/
+bin/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*~
+
+# Specific to your Matrix Operations directory
+Matrix\ Operations/matrix_mul
+Matrix\ Operations/*.o
+Matrix\ Operations/*.out
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

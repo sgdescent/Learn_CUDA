@@ -24,23 +24,24 @@ inline void gpuAssert(cudaError_t code, const char *file, int line,
 __global__ void matrix_multiplication_kernel(const float *A, const float *B,
                                              float *C, int M, int N, int K) {
 
-  int col = blockIdx.x * blockDim.x + threadIdx.x;
+  // Each thread is responsible for one row of the output matrix
   int row = blockIdx.y * blockDim.y + threadIdx.y;
-  if (row < M && col < K) {
-    float cval = 0;
-    for (int k = 0; k < N; k++) {
-      cval += A[row * N + k] * B[k * K + col];
+  if (row < M) {
+    for (int cur_col = 0; cur_col < K; cur_col++) {
+      float cval = 0;
+      for (int k = 0; k < N; k++) {
+        cval += A[row * N + k] * B[k * K + cur_col];
+      }
+      C[row * K + cur_col] = cval;
     }
-    C[row * K + col] = cval;
   }
 }
 
 // A, B, C are device pointers (i.e. pointers to memory on the GPU)
 extern "C" void solve(const float *A, const float *B, float *C, int M, int N,
                       int K) {
-  dim3 threadsPerBlock(16, 16);
-  dim3 blocksPerGrid((K + threadsPerBlock.x - 1) / threadsPerBlock.x,
-                     (M + threadsPerBlock.y - 1) / threadsPerBlock.y);
+  dim3 threadsPerBlock(1, 16);
+  dim3 blocksPerGrid(1, (M + threadsPerBlock.y - 1) / threadsPerBlock.y);
 
   // Create CUDA events for kernel timing
   cudaEvent_t start, stop;
